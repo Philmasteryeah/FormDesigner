@@ -1,0 +1,545 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Form Designer</title>
+	<link href="ribbon/ribbon.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.7.11/fabric.js"></script>
+	<script type="text/javascript" src="ribbon/ribbon.js"></script>
+</head>
+<body bgcolor="#c9cdd2">
+	<div id="ribbon">
+		<span class="ribbon-window-title">Form Designer</span>
+		<div class="ribbon-tab" id="file-tab">
+			<span class="ribbon-title">File</span>
+			<div class="ribbon-section">
+				<div class="button ribbon-button" id="btnOpen">
+					<img src="icons/normal/open-page.png" alt="Open" />
+					<span class="label">Open Image</span>
+				</div>
+				</div>
+			<div class="ribbon-section">
+				<div class="button ribbon-button" id="btnSaveJSON">
+					<img src="icons/normal/save-page.png" alt="Save" />
+					<span class="label">Save as JSON</span>
+				</div>
+			</div>
+			<div class="ribbon-section">
+				<div class="button ribbon-button" id="btnLoad">
+					<img src="icons/normal/open-table.png" alt="Load" />
+					<span class="label">Load JSON</span>
+				</div>
+			</div>
+			<div class="ribbon-section">
+			<textarea id="textJSON" style="height: 40px; max-height: 70px;">
+			</textarea>
+			</div>
+			<div class="ribbon-section">
+				<div class="button ribbon-button" id="btnDownloadSVG">
+					<img src="icons/normal/save-page.png" alt="Save" />
+					<span class="label">Save as SVG</span>
+				</div>
+			</div>	
+			<div id='dwn'></div>
+		</div>
+
+		<div class="ribbon-tab" id="format-tab">
+			<span class="ribbon-title">Edit</span>
+			<div class="ribbon-section">
+				<span class="section-title"></span>
+				<div class="ribbon-button ribbon-button-large" id="addRectangle">
+					<span class="button-title">Add<br/>Rectangle</span>
+					<img class="ribbon-icon ribbon-normal" src="icons/normal/new-table.png" />
+					<img class="ribbon-icon ribbon-hot" src="icons/hot/new-table.png" />
+					<img class="ribbon-icon ribbon-disabled" src="icons/disabled/new-table.png" />
+				</div>
+				<div class="ribbon-button ribbon-button-large" id="deleteSelectedObject">
+					<span class="button-title">Delete selected <br/>Object</span>
+					<img class="ribbon-icon ribbon-normal" src="icons/normal/delete-table.png" />
+				</div>
+				<div class="ribbon-button ribbon-button-large" id="clearCanvas">
+					<span class="button-title">Clear Canvas</span>
+					<img class="ribbon-icon ribbon-normal" src="icons/normal/delete-page.png" />
+				</div>
+			</div>
+			<div class="ribbon-section" style="width: 170px;">
+				<p style="display: inline;">top:</p>
+				<input type="text" id="topCoord"  style="width: 100px; margin-bottom: 10px;">
+				<input type="button" id="setTopCoord" value="set" style="height: 17px; padding-bottom: 15px;">
+				<p style="display: inline; padding-right: 1px;">left:</p>
+				<input type="text" id="leftCoord" style="width: 100px;">
+				<input type="button" id="setLeftCoord" value="set" style="height: 17px; padding-bottom: 15px;">
+			</div>
+			<div class="ribbon-section" style="width: 180px;">
+				<p style="display: inline; padding-right: 5px;">width:</p>
+				<input type="text" id="objectWidth"  style="width: 100px; margin-bottom: 10px;">
+				<input type="button" id="setWidth" value="set" style="height: 17px; padding-bottom: 15px;">
+				<p style="display: inline; padding-right: 1px;">height:</p>
+				<input type="text" id="objectHeight" style="width: 100px;">
+				<input type="button" id="setHeight" value="set" style="height: 17px; padding-bottom: 15px;">
+			</div>
+			<div class="ribbon-section" style="width: 180px;">
+				<p style="display: inline;">name:</p>
+				<input type="text" id="objectName"  style="width: 100px; margin-bottom: 10px;">
+				<input type="button" id="setName" value="set" style="height: 17px; padding-bottom: 15px;">
+				<p style="display: inline; padding-right: 5px;">type:</p>
+				<input type="text" id="objectType" style="width: 100px;">
+				<input type="button" id="setType" value="set" style="height: 17px; padding-bottom: 15px;">
+			</div>
+		</div>
+		<div class="ribbon-tab" id="next-tab">
+			<span class="ribbon-title">Navigation</span>
+			<div class="ribbon-section">
+				<span class="section-title"></span>
+				<div class="ribbon-button ribbon-button-large" id="zoomOut">
+					<span class="button-title" >Zoom Out</span>
+					<img class="ribbon-icon ribbon-normal" src="icons/normal/icon_zoomout.png"/>
+				</div>
+				<div class="ribbon-button ribbon-button-large" id="zoomIn">
+					<span class="button-title">Zoom In</span>
+					<img class="ribbon-icon ribbon-normal" src="icons/normal/icon_zoomin.png" />
+				</div>
+				<div class="ribbon-button-large">
+					<span class="button-title">scale</span>
+					<input id="slide" type="range" min="1" max="100" step="1" value="10">
+					<div id="sliderAmount"></div>
+				</div>
+				<div class="ribbon-button ribbon-button-large" id="move">
+					<span class="button-title">CTRL to move <br/>ALL</span>
+					<img class="ribbon-icon ribbon-normal" src="icons/normal/bullet-orange.png" />
+				</div>
+
+				<div class="ribbon-button ribbon-button-large" id="toggleScroll">
+					<span class="button-title">Toggle Scrollbar <br/>ON/OFF</span>
+					<img class="ribbon-icon ribbon-normal" src="icons/normal/icon_printpreview.png" />
+				</div>
+				
+
+			</div>
+			<div class="ribbon-section">
+				<span class="section-title"></span>
+				<div class="ribbon-button ribbon-button-small" id="left">
+					<span class="button-title">left</span>
+					<img class="ribbon-icon ribbon-normal" src="icons/hot/left.png" />
+				</div>
+				<div class="ribbon-button ribbon-button-small" id="right">
+					<span class="button-title">right</span>
+					<img class="ribbon-icon ribbon-normal" src="icons/hot/right.png" />
+				</div>
+			</div>
+			<div class="ribbon-section">
+				<div class="ribbon-button ribbon-button-small" id="up">
+					<span class="button-title">up</span>
+					<img class="ribbon-icon ribbon-normal" src="icons/hot/up.png" />
+				</div>
+				<div class="ribbon-button ribbon-button-small" id="down">
+					<span class="button-title">down</span>
+					<img class="ribbon-icon ribbon-normal" src="icons/hot/down.png" />
+				</div>
+			</div>
+		</div>		
+	</div>
+	<div id="canvas-container">
+		<canvas id="imageCanvas" width="800" height="900"></canvas>
+	</div>
+	<form>
+		<input type="file" id="imageLoader" style="visibility : hidden;" name="imageLoader"/>
+	</form>
+	<script>
+	$(document).ready(function() {
+	    
+		$('#ribbon').ribbon();
+
+		// diable ctr to move at start
+		$('#move').disable();
+		
+		// to get access to the canvas per console
+	    var canvas = window.canvas = new fabric.Canvas('imageCanvas');
+		
+		var panning = false;
+		var ctrlDown = false;
+		var copiedObjects = new Array();
+		
+		
+	    function zoomIn() {
+	        canvas.setZoom(canvas.getZoom() + 1/$('#slide').val());
+	    };
+
+		function zoomOut() {
+			canvas.setZoom(canvas.getZoom() - 1/$('#slide').val());
+		}
+				
+		function saveCanvasToJSON(){
+			var atts = ['name', 'objectType'];
+		    $('#textJSON').html(JSON.stringify(canvas.toJSON(atts)));
+		};
+		
+		function loadJSONToCanvas(){
+			canvas.loadFromJSON($('#textJSON').val());
+			canvas.renderAll();
+		};
+		
+		function moveCanvasDown(){
+		    var units = 10;
+			var delta = new fabric.Point(0, units);
+			canvas.relativePan(delta);
+		};
+		
+		function moveCanvasUp(){
+			var units = 10;
+			var delta = new fabric.Point(0, -units);
+			canvas.relativePan(delta);
+		};
+	
+		function moveCanvasRight(){
+			var units = 10;
+			var delta = new fabric.Point(units, 0);
+			canvas.relativePan(delta);
+		};
+	
+		function moveCanvasLeft(){
+			var units = 10;
+			var delta = new fabric.Point(-units, 0);
+			canvas.relativePan(delta);
+		};
+		
+		function addNewRectangle() {
+			var rect = new fabric.Rect({
+				left: 100,
+				top: 100,
+				fill: 'transparent',
+				stroke: 'black',
+				width: 100,
+				height: 100,
+				strokeWidth: 1,
+	
+			});
+			canvas.add(rect);
+		};
+
+		function deleteSelectedObject(){
+		    var selected = canvas.getActiveObject();
+			if (selected != null)
+				selected.remove();
+		};
+	
+		// toggle browser scrollbar on and off
+	    function toggleScroll() {
+			if ($('body').css("overflow") != 'hidden') 
+				$('body').css("overflow", "hidden");
+			else 
+				$('body').css("overflow", "auto");
+		};	
+		
+		function updateTextFields(){
+		    var selected = canvas.getActiveObject();
+			if (selected != null){
+				$('#objectWidth').val(selected.getWidth());
+				$('#objectHeight').val(selected.getHeight());
+				$('#objectName').val(selected.name);
+				$('#objectType').val(selected.objectType);
+				$('#topCoord').val(selected.top);
+				$('#leftCoord').val(selected.left);
+			}
+		};
+		
+		function handeArrowMoving(e) {
+			// e is the key event
+			var movementDelta = 2
+			var activeObject = canvas.getActiveObject();
+		
+			if (e.keyCode === 37) {
+				e.preventDefault(); // Prevent the default action
+				if (activeObject) {
+					var a = activeObject.get('left') - movementDelta;
+					activeObject.set('left', a);
+				}
+		
+			} else if (e.keyCode === 39) {
+				e.preventDefault(); // Prevent the default action
+				if (activeObject) {
+					var a = activeObject.get('left') + movementDelta;
+					activeObject.set('left', a);
+				}
+		
+			} else if (e.keyCode === 38) {
+				e.preventDefault(); // Prevent the default action
+				if (activeObject) {
+					var a = activeObject.get('top') - movementDelta;
+					activeObject.set('top', a);
+				}
+		
+			} else if (e.keyCode === 40) {
+				e.preventDefault(); // Prevent the default action
+				if (activeObject) {
+					var a = activeObject.get('top') + movementDelta;
+					activeObject.set('top', a);
+				}
+			}
+		
+			if (activeObject) {
+				activeObject.setCoords();
+				canvas.renderAll();
+			} else if (activeGroup) {
+				activeGroup.setCoords();
+				canvas.renderAll();
+			}
+		
+		};
+		
+		function handleCopyPaste(e) {
+			//If ctrl is pressed, set ctrlDown to true
+		    if (e.keyCode == 17) ctrlDown = true;
+
+		    //Handle ctrl+c
+		    if (ctrlDown && e.keyCode == 67) {
+		        //reset array with copied objects
+		        copiedObjects = [];
+		        var activeObject = canvas.getActiveObject();
+
+				if (activeObject) { //If one item is selected then acriveObject will be true
+		            copiedObjects.push(activeObject); //push our selected item into the array
+		        }
+		    };
+
+		    //handle ctrl+v
+		    if (ctrlDown && e.keyCode == 86) {
+		        var count = 0;
+		        if (copiedObjects.length == 1) {
+		            //check if we can handle async cloning
+		            if (fabric.util.getKlass(copiedObjects[0].type).async) {
+		                copiedObjects[0].clone(function(clone) {
+		                    pasteOne(clone);
+		                });
+		            } else { //Sync cloning
+		                pasteOne(copiedObjects[0].clone());
+
+		            }
+		        }
+		    }
+		};
+		
+		function pasteOne(clone) {
+			clone.left += 100; //add 100 to the left position
+			clone.top += 100; //add 100 to the top position
+			clone.set('canvas', canvas); //Set the canvas attribute to our canvas
+			clone.setCoords(); //Must call this when we cahnged our coordinates
+			canvas.add(clone); //Add the item
+		};
+		
+		// zoom on mousewheel
+		//$('.canvas-container').on('mousewheel', function (options) {
+		//	var delta = options.originalEvent.wheelDelta;
+		//	if (delta != 0) {
+		//		if (delta > 0) {
+		//			//zoomIn();
+		//			var zoomFak = canvas.getZoom() + 1/$('#slide').val();
+		//			canvas.setZoom(zoomFak);
+		//			canvas.setHeight(canvas.getHeight() * zoomFak);
+		//			canvas.setWidth(canvas.getWidth() * zoomFak);
+		//			
+		//		} else if (delta < 0) {
+		//			//zoomOut();
+		//			var zoomFak = canvas.getZoom() - 1/$('#slide').val();
+		//			canvas.setZoom(zoomFak);
+		//			canvas.setHeight(canvas.getHeight() /zoomFak);
+		//			canvas.setWidth(canvas.getWidth() / zoomFak);
+		//			
+		//		}
+		//	}
+        //
+		//	//canvas.setWidth(canvas.getWidth() * 2);
+		//});
+				
+		// init ribbon functions
+	    $('.ribbon-button').click(function() {
+	        var id = $(this).attr('id');
+	        if (this.isEnabled()) {
+	            if (id === 'btnOpen')
+	                $('#imageLoader').click();
+					
+	            if (id === 'zoomIn')
+	                zoomIn();
+				
+				if (id === 'zoomOut')
+					zoomOut();
+				
+				if (id === 'toggleScroll')
+					toggleScroll();
+				
+				if( id === 'addRectangle')
+					addNewRectangle();
+				
+				if( id === 'clearCanvas')
+				     canvas.clear();
+					 
+				if( id === 'deleteSelectedObject')
+					deleteSelectedObject();
+				
+				if( id === 'up')
+					moveCanvasUp();
+					
+				if( id === 'down')
+					moveCanvasDown();
+					
+				if( id === 'left')
+					moveCanvasLeft();
+					
+				if( id === 'right')
+					moveCanvasRight();
+				
+				if( id === 'btnLoad')
+					loadJSONToCanvas();					
+				
+				if( id === 'btnSaveJSON')
+					saveCanvasToJSON();
+		
+				console.log(id);
+	        }
+	    });
+		
+		$(document).on('keyup', function (e) {
+			if (e.keyCode == 17) ctrlDown = false;
+		});
+		
+		// init key functions
+		$(document).on('keydown', function(e) {
+
+		    // strg ctrl
+		    if ((e.metaKey || e.ctrlKey) && !panning) {
+		        // strg + c
+		        panning = true;
+		        $('#move').enable();
+		    } else {
+		        panning = false;
+		        $('#move').disable();
+		    }
+
+		    // entf
+		    if ((e.keyCode === 46))
+		        deleteSelectedObject();
+
+		    handeArrowMoving(e);
+	
+			handleCopyPaste(e);
+		    
+		});
+		
+		// init panning
+		canvas.on('mouse:move', function (e) {
+		
+			updateTextFields();
+		
+			if (panning && e && e.e) {
+				var x = e.e.movementX;
+				var y = e.e.movementY;
+				if (!x) {
+					x = e.e.screenX - previousEvent.e.screenX;
+					y = e.e.screenY - previousEvent.e.screenY;
+				}
+				var delta = new fabric.Point(x, y);
+				canvas.relativePan(delta);
+			}
+			previousEvent = e;
+		});
+		
+		// init scaling line width fix
+		canvas.on('object:scaling', function(e) {
+			var obj = e.target;
+			if(obj.scaleX){
+				obj.width *= obj.scaleX;
+				obj.height *= obj.scaleY;
+				obj.scaleX = 1;
+				obj.scaleY = 1;
+			}
+		});
+		
+		// init slider value
+		$('#sliderAmount').html($("#slide").val());
+		
+		// init slide
+		$('#slide').on('change', function(e){
+			var value = $("#slide").val();
+			$("#sliderAmount").html( $("#slide").val());
+		});
+		
+		// init svg download
+		$('#btnDownloadSVG').click(function() {
+			var filedata = canvas.toSVG();
+ 			var locfile = new Blob([filedata], {type: "image/svg+xml;charset=utf-8"});
+			var locfilesrc = URL.createObjectURL(locfile);
+ 			$('#dwn').append("<a href=" + locfilesrc + " download='form.svg' style='padding-right: 5px;'>Download "+new Date().toLocaleTimeString()+"</a>");
+		});
+		
+		$('#setWidth').click(function() {
+			var selected = canvas.getActiveObject();
+			if (selected != null){
+				selected.setWidth($('#objectWidth').val() / selected.scaleX);
+				canvas.renderAll();
+			}
+		});
+
+		$('#setHeight').click(function() {
+			var selected = canvas.getActiveObject();
+			if (selected != null){
+				selected.setHeight($('#objectHeight').val() / selected.scaleY);
+				canvas.renderAll();
+			}
+		});
+
+		$('#setTopCoord').click(function() {
+			var selected = canvas.getActiveObject();
+			if (selected != null){
+				console.log(selected.getTop());
+				selected.setTop($('#topCoord').val() / selected.scaleY);
+				canvas.renderAll();
+			}
+		});
+
+		$('#setLeftCoord').click(function() {
+			var selected = canvas.getActiveObject();
+			if (selected != null){
+				selected.setLeft($('#leftCoord').val() / selected.scaleX);
+				canvas.renderAll();
+			}
+		});
+		
+		$('#setName').click(function() {
+			var selected = canvas.getActiveObject();
+			if (selected != null){
+				selected.name = $('#objectName').val();
+				canvas.renderAll();
+			}
+		});
+		
+		$('#setType').click(function() {
+			var selected = canvas.getActiveObject();
+			if (selected != null){
+				selected.objectType = $('#objectType').val();
+				canvas.renderAll();
+			}
+		});
+
+	    // init img upload
+	    $('#imageLoader').change(function() {
+	        var reader = new FileReader();
+	        reader.onload = function(event) {
+	            var img = new Image();
+	            img.onload = function() {
+	                canvas.setBackgroundImage(img.src, canvas.renderAll.bind(canvas), {
+	                    originX: 'left',
+	                    originY: 'top',
+	                    left: 0,
+	                    top: 0
+	                });
+	            }
+	            img.src = event.target.result;
+	        }
+	        reader.readAsDataURL(event.target.files[0]);
+	    });
+		
+		$('.canvas-container').css("margin","auto");
+	});
+	</script>
+</body>
+</html>
