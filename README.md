@@ -2,6 +2,14 @@
 
 https://philmasteryeah.github.io/FormDesigner/
 
+# Workflow
+ - File -> Open Image
+ - Edit -> Add Rectangle
+ - drag and drop the rectangle
+ - add name and type (in the head)
+ - File -> Save as JSON
+ - copy the content or save as SVG
+
 # FormDesigner
 - HTML
 - JavaScript
